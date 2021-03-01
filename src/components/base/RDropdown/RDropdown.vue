@@ -2,50 +2,59 @@
   <component
     :is="tag"
   >
-    <slot name="header" :open="open" :close="close" :toggle="toggle"></slot>
+    <slot
+      name="header"
+      :open="open"
+      :close="close"
+      :toggle="toggle"
+    ></slot>
 
-    <r-modal
-      ref="dropdownBody"
-      open-class="dropdownCampaignShow"
+    <r-pop-up
+      ref="popUp"
       class="campaign-active-settings"
+      open-class="dropdownCampaignShow"
     >
       <slot></slot>
-    </r-modal>
+    </r-pop-up>
+
+    <slot
+      name="footer"
+      :open="open"
+      :close="close"
+      :toggle="toggle"
+    ></slot>
   </component>
 </template>
 
 <script>
-import RModal from '@/components/base/RModal/RModal'
+import { tagIs } from '@/mixins/tagIs'
+import RPopUp from '@/components/base/RPopUp/RPopUp'
 
 export default {
-  name: 'RDropdown',
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: 'div'
-    }
-  },
+  name: 'RDropDown',
+  mixins: [
+    tagIs
+  ],
   methods: {
     open() {
-      const dropdownBody = this.$refs.dropdownBody
+      const popUp = this.$refs.popUp
 
-      dropdownBody.outsideAction('open')
+      popUp.outsideAction('open')
     },
     close() {
-      const dropdownBody = this.$refs.dropdownBody
+      const popUp = this.$refs.popUp
 
-      dropdownBody.outsideAction('close')
+      popUp.outsideAction('close')
     },
-    toggle(title) {
-      console.log(title + ' toggle')
-      const dropdownBody = this.$refs.dropdownBody
+    toggle() {
+      console.log('dropdown toggle')
+      const popUp = this.$refs.popUp
 
-      dropdownBody.outsideAction('toggle')
+      popUp.outsideAction('toggle')
     }
   },
   components: {
-    RModal
+    RPopUp
   }
 }
 </script>

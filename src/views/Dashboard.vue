@@ -48,38 +48,29 @@
       <div class="columnFlex dashboardDataContainer">
         <div class="dashboardDataTypesContainer">
           <div class="rowFlex dashboardDataTypes">
-            <span class="dashboardDataTypeRibbon" id="dataRibbon"></span>
-            <div class="dashboardDataTypesSelected dashboardDataType">
-              <p>ENGAGEMENT RATE</p>
+
+            <span
+              :class="statsRibbonClasses"
+              class="dashboardDataTypeRibbon"
+              id="dataRibbon"
+            ></span>
+
+            <div
+              v-for="(stat, index) of stats"
+              :key="index"
+              @click="setStatSelected(index)"
+              class="dashboardDataType"
+            >
+              <p>{{stat.title}}</p>
             </div>
-            <div class="dashboardDataType">
-              <p>CPE</p>
-            </div>
-            <div class="dashboardDataType">
-              <p>CTR</p>
-            </div>
-            <div class="dashboardDataType">
-              <p>CLICKS</p>
-            </div>
-            <div class="dashboardDataType">
-              <p>Story Views</p>
+
           </div>
-          <div class="dashboardDataType">
-              <p>Total Saves</p>
-          </div>
-            <div class="dashboardDataType totalLikes">
-              <p>TOTAL LIKES</p>
-            </div>
-            <div class="dashboardDataType totalComments">
-              <p>TOTAL COMMENTS</p>
-            </div>
-          </div>
-          <p class="right"> < </p>
+          <p class="right"></p>
         </div>
 
         <div class="columnFlex dashboardData">
           <p id="dashboardSelectedStat">
-            AVERAGE ENGAGEMENT RATE
+            {{statSelected.title}}
           </p>
 
           <div class="animation-wrap position-relative animation-card">
@@ -87,24 +78,37 @@
           <div class="animated-numbers-wrap orelo d-flex justify-content-center">
                 
                 <div class="column font-orelo text-primary d-flex flex-column">
-                    <div id="dashNumStart" class="position dashboardStartInt9">
-                        <span class="blank">_</span>
-                        <span>$</span>
-                        <span>0</span>
-                        <span>1</span>
-                        <span>2</span>
-                        <span>3</span>
-                        <span>4</span>
-                        <span>5</span>
-                        <span>6</span>
-                        <span>7</span>
-                        <span>8</span>
-                        <span>9</span>
-                        <span class="blank">_</span>
+                    <div
+                      id="dashNumStart"
+                      class="position"
+                      :class="[
+                        `dashboardStartInt${statSelected.value[0] === '$' ? 'Dollar' : statSelected.value[0]}`
+                      ]"
+                    >
+                      <span class="blank">_</span>
+                      <span>$</span>
+                      <span>0</span>
+                      <span>1</span>
+                      <span>2</span>
+                      <span>3</span>
+                      <span>4</span>
+                      <span>5</span>
+                      <span>6</span>
+                      <span>7</span>
+                      <span>8</span>
+                      <span>9</span>
+                      <span class="blank">_</span>
                     </div>
                 </div>
+
                 <div class="column font-orelo text-primary d-flex flex-column">
-                    <div id="dashNum1" class="position dashboardMiddleInt7">    
+                    <div
+                      id="dashNum1"
+                      class="position"
+                      :class="[
+                        `dashboardMiddleInt${statSelected.value[1] === '$' ? 'Dollar' : statSelected.value[1]}`
+                      ]"
+                    >    
                         <span class="blank">_</span>    
                         <span>0</span>    
                         <span>1</span>
@@ -119,40 +123,60 @@
                         <span class="blank">_</span>
                     </div>
                 </div>
-                    <div class="column font-orelo text-primary d-flex flex-column">
-                        <div id="dashNum2" class="position dashboardMiddleInt8">            
-                            <span class="blank">_</span>    
-                            <span>0</span>    
-                            <span>1</span>
-                            <span>2</span>
-                            <span>3</span>
-                            <span>4</span>
-                            <span>5</span>
-                            <span>6</span>
-                            <span>7</span>
-                            <span>8</span>
-                            <span>9</span>
-                            <span class="blank">_</span>
-                        </div>
-                        <span class="position-absolute dot">.</span>
+
+                <div class="column font-orelo text-primary d-flex flex-column">
+                    <div
+                      id="dashNum2"
+                      class="position"
+                      :class="[
+                        `dashboardMiddleInt${statSelected.value[2] === '.' ? (statSelected.value[3] === '$' ? 'Dollar' : statSelected.value[3]) : (statSelected.value[2] === '$' ? 'Dollar' : statSelected.value[2])}`
+                      ]"
+                    >            
+                      <span class="blank">_</span>    
+                      <span>0</span>    
+                      <span>1</span>
+                      <span>2</span>
+                      <span>3</span>
+                      <span>4</span>
+                      <span>5</span>
+                      <span>6</span>
+                      <span>7</span>
+                      <span>8</span>
+                      <span>9</span>
+                      <span class="blank">_</span>
                     </div>
-                    <div class="column font-orelo text-primary d-flex flex-column">
-                        <div id="dashNumEnd" class="position dashboardEndIntPercent">            
-                            <span class="blank">_</span> 
-                            <span>%</span>   
-                            <span>0</span>    
-                            <span>1</span>
-                            <span>2</span>
-                            <span>3</span>
-                            <span>4</span>
-                            <span>5</span>
-                            <span>6</span>
-                            <span>7</span>
-                            <span>8</span>
-                            <span>9</span>
-                            <span class="blank">_</span>
-                        </div>
+
+                    <span
+                      class="position-absolute dot"
+                      :style="{
+                        animation: statSelected.value[2] === '.' ? '1s linear 0s 1 normal forwards running dotAnimation' : '1s linear 0s 1 normal forwards running dotAnimationHide'
+                      }"
+                    >.</span>
+                </div>
+
+                <div class="column font-orelo text-primary d-flex flex-column">
+                    <div
+                      id="dashNumEnd"
+                      class="position"
+                      :class="[
+                        `dashboardEndInt${statSelected.value[2] === '.' ? (statSelected.value[4] === '$' ? 'Dollar' : statSelected.value[4] === '%' ? 'Percent' : statSelected.value[4]) : (statSelected.value[3] === '$' ? 'Dollar' : statSelected.value[3] === '%' ? 'Percent' : statSelected.value[3])}`
+                      ]"
+                    >            
+                      <span class="blank">_</span> 
+                      <span>%</span>   
+                      <span>0</span>    
+                      <span>1</span>
+                      <span>2</span>
+                      <span>3</span>
+                      <span>4</span>
+                      <span>5</span>
+                      <span>6</span>
+                      <span>7</span>
+                      <span>8</span>
+                      <span>9</span>
+                      <span class="blank">_</span>
                     </div>
+                </div>
     
                 </div>
 
@@ -228,19 +252,73 @@
           </div>
           <img class="mobileIcon dashboardMobileSortIcon" src="@/assets/icons/arrow-up-down.jpg" onclick="showScreen('inviteJobScreen')">
           <img src="@/assets/icons/folderUpload.png" onclick="showScreen('createFolderScreen')" class="folderUploadIcon keepRightDesktop">
-          <div class="dropdownDashboardContainer" onclick="campaignDropdownShow(this, 'sortByAdvertiser')">
-            <input id="sortBy" name="date-completed" placeholder="Sort By" class="dropdownDashboard" style="pointer-events: none;" />
-            <img src="@/assets/icons/chevron-down-sm.svg">
-          </div>
+
+          <r-drop-down
+            class="dropdownDashboardContainer"
+          >
+            <template #header="{ toggle }">
+              <div
+                @click="toggle"
+              >
+                <input
+                  id="sortBy"
+                  name="date-completed"
+                  placeholder="Sort By"
+                  class="dropdownDashboard"
+                  style="pointer-events: none;"
+                >
+                <img src="@/assets/icons/chevron-down-sm.svg">
+              </div>
+            </template>
+
+            <p>Date Completed</p>
+            <p>Date Created</p>
+            <p>Budget</p>
+            <p>Enagement Rate</p>
+            <p># Of Influencers</p>
+          </r-drop-down>
+
         </div>
+
         <div class="flexRow dashboardMenu">
-          <p class="campaignNavType campaignNavTypeSelected">TODAY</p>
-          <p class="campaignNavType">PENDING</p>
-          <p class="campaignNavType">DRAFTS</p>
-          <p class="campaignNavType">COMPLETED</p>
+
+          <p
+            v-for="(tab, index) of tabs"
+            :key="index"
+            @click="setTabSelected(index)"
+            :class="getTabsButtonClasses(index)"
+            class="campaignNavType"
+          >{{tab.title}}</p>
+
         </div>
       </div>
-      <div class="rowFlex campaignsContainer" id="campaigns"></div>
+      <div class="rowFlex campaignsContainer" id="campaigns">
+
+        <div class="campaignContainer activeNoFolderCampaign">
+          <div class="campaign columnFlex">
+
+            <div class="campaignPhotos" id="campaignPhotos0">
+              <div class="campaignImageInfo">
+                <p>Remaining: 100</p>
+                <p>Budget: 500</p>
+              </div>
+
+              <img src="@/assets/images/userPhotos/userPhoto1.jpg" alt="">
+            </div>
+
+            <div class="campaignTitle mobileFlex">
+              <p>Project Title</p>
+              <p>3/26/20 - 1pm</p>
+            </div>
+
+            <div class="campaignInfo">
+              
+            </div>
+
+          </div>
+        </div>
+
+      </div>
 
     </section>
 
@@ -1259,7 +1337,7 @@
     <div class="screen" id="reviewScreen" onclick="closeScreen(event)">
       <div class="screenContainer">
         <h1 onclick="showScreen('reviewScreen')" class="right">X</h1>
-        <p id="closeInfluencerPickMobile" onclick="showScreen('reviewScreen')"> < </p>
+        <p id="closeInfluencerPickMobile" onclick="showScreen('reviewScreen')"></p>
         <h1 id="photoViewJobTitle" >Reviews</h1>
 
           <div class="dashboardReviewsColumn">
@@ -1473,13 +1551,104 @@ import '@/assets/css/general.css'
 import '@/assets/css/dashboard-animation.css'
 import '@/assets/css/ion.rangeSlider.css'
 
-export default {
-  methods: {
-    openModal() {
-      const modal = this.$refs.modal
+import RDropDown from '@/components/base/RDropDown/RDropDown'
 
-      modal.outsideAction('open')
+export default {
+  name: 'Dashboard',
+  data() {
+    return {
+      statSelectedIndex: 1,
+      stats: [
+        {
+          title: 'ENGAGEMENT RATE',
+          value: '97.8%'
+        },
+        {
+          title: 'CPE',
+          value: '$3.47'
+        },
+        {
+          title: 'CTR',
+          value: '85.2%'
+        },
+        {
+          title: 'CLICKS',
+          value: '9785'
+        },
+        {
+          title: 'STORY VIEWS',
+          value: '5300'
+        },
+        {
+          title: 'TOTAL SAVES',
+          value: '3700'
+        },
+        {
+          title: 'TOTAL LIKES',
+          value: '4000'
+        },
+        {
+          title: 'TOTAL COMMENTS',
+          value: '6000'
+        }
+      ],
+      tabSelectedIndex: 0,
+      tabs: [
+        {
+          title: 'TODAY'
+        },
+        {
+          title: 'PENDING'
+        },
+        {
+          title: 'DRAFTS'
+        },
+        {
+          title: 'COMPLETED'
+        }
+      ]
     }
+  },
+  computed: {
+    statsRibbonClasses() {
+      const statSelectedIndex = this.statSelectedIndex
+
+      return {
+        [`dashboardDataTypeRibbonSelected${statSelectedIndex}`]: statSelectedIndex > 0
+      }
+    },
+    statSelected() {
+      const stats = this.stats
+      const statSelectedIndex = this.statSelectedIndex
+      const statSelected = stats[statSelectedIndex]
+
+      return statSelected
+    },
+    tabSelected() {
+      const tabs = this.tabs
+      const tabSelectedIndex = this.tabSelectedIndex
+      const tabSelected = tabs[tabSelectedIndex]
+
+      return tabSelected
+    }
+  },
+  methods: {
+    setStatSelected(index) {
+      this.statSelectedIndex = index
+    },
+    setTabSelected(index) {
+      this.tabSelectedIndex = index
+    },
+    getTabsButtonClasses(index) {
+      const tabSelectedIndex = this.tabSelectedIndex
+
+      return {
+        campaignNavTypeSelected: tabSelectedIndex === index
+      }
+    }
+  },
+  components: {
+    RDropDown
   }
 }
 </script>

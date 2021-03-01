@@ -3060,6 +3060,7 @@ footer .ig-icon {
     overflow: hidden;
     padding: 0 40px;
 }
+
 @media only screen and (max-width: 1200px) {
     .animation-wrap .animated-numbers-wrap {
         padding: 0 25px;
@@ -3072,6 +3073,12 @@ footer .ig-icon {
   text-align: center;
   width: 1em;
 }
+
+.animated-numbers-wrap .column > div {
+    display: flex;
+    flex-direction: column;
+}
+
 @media screen and (min-width: 1600px) {
     .animated-numbers-wrap .column {
         font-size: 110px;
@@ -4827,6 +4834,14 @@ textarea {
     width: 13%
 }
 
+.dashboardDataTypes div:nth-of-type(7) {
+    width: 15%;
+}
+
+.dashboardDataTypes div:nth-of-type(8) {
+    width: 15%;
+}
+
 .dashboardDataTypes .totalLikes {
     width: 15%
 }
@@ -4921,22 +4936,22 @@ textarea {
     left: 31%;
 }
 
-.dashboardDataTypeRibbonSelectedStoryViews {
+.dashboardDataTypeRibbonSelected4 {
     width: 13%;
     left: 40%;
 }
 
-.dashboardDataTypeRibbonSelectedTotalSaves {
+.dashboardDataTypeRibbonSelected5 {
     width: 14%;
     left: 53%;
 }
 
-.dashboardDataTypeRibbonSelectedTotalLikes {
+.dashboardDataTypeRibbonSelected6 {
     width: 14%;
     left: 67%;
 }
 
-.dashboardDataTypeRibbonSelectedTotalComments {
+.dashboardDataTypeRibbonSelected7 {
     width: 20%;
     left: 80%;
 }

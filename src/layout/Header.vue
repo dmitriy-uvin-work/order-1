@@ -11,11 +11,22 @@
           </h1>
         </router-link>
 
-        <NavbarToggler
-          @toggleNavbar="toggleNavbar"
-        />
+        <button
+          @click="mobileMenuOpen"
+          class="navbar-toggler p-0"
+          type="button"
+          data-target="#main-nav-mobile"
+          aria-controls="main-nav-mobile"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <div class="navbar w-100" id="main-nav">
+        <div
+          class="navbar w-100"
+          id="main-nav"
+        >
           <ul class="navbar-nav w-100">
             <li class="nav-item">
               <router-link id="navDashboardButton" class="nav-link" to="/dashboard">Dashboard</router-link>
@@ -28,30 +39,47 @@
             </li>
             <div class="ml-auto d-flex">
               <li class="nav-item d-flex">
-                <button @click="toggleModalNotifications" class="bg-transparent border-0 d-block">
+                <button
+                  @click="notificationsPopUpToggle"
+                  class="bg-transparent border-0 d-block"
+                >
                   <img src="@/assets/icons/Icon-ionic-ios-notifications.png" alt="notification bell">
                 </button>
               </li>
 
-              <r-dropdown>
+              <r-drop-down
+                tag="li"
+                class="nav-item account has-dropdown"
+              >
                 <template #header="{ toggle }">
-                  <button @click="toggle" class="nav-link bg-transparent border-0 text-uppercase accountLink">
+                  <button
+                    @click="toggle"
+                    class="nav-link bg-transparent border-0 text-uppercase accountLink"
+                  >
                     Account <img src="@/assets/icons/chevron-down-sm.svg">
                   </button>
                 </template>
 
-                <r-dropdown-item>Account Settings</r-dropdown-item>
-                <r-dropdown-item tag="router-link" to="/favorites">Favorites</r-dropdown-item>
-                <r-dropdown-item>Paypal</r-dropdown-item>
-                <r-dropdown-item tag="router-link" to="/instagram-connect">Relink Instagram</r-dropdown-item>
-                <r-dropdown-item tag="router-link" to="/">Sign Out</r-dropdown-item>
-              </r-dropdown>
+                <p>Account Settings</p>
+                <router-link to="/favorites">Favorites</router-link>
+                <p>Paypal</p>
+                <router-link to="/instagram-connect">Relink Instagram</router-link>
+                <router-link to="/">Sign Out</router-link>
+              </r-drop-down>
             </div>
           </ul>
         </div>
 
-        <div :class="{ active: isNavbarOpen }" class="w-100 d-flex" id="main-nav-mobile">
-          <button @click="closeNavbar" class="position-absolute" id="menu-close-btn">
+        <div
+          :class="mobileMenuClasses"
+          class="w-100 d-flex"
+          id="main-nav-mobile"
+        >
+          <button
+            @click="mobileMenuClose"
+            class="position-absolute"
+            id="menu-close-btn"
+          >
             <span class="sr-only">Menu close button</span>
           </button>
           <div class="navbar p-0 h-100">
@@ -97,12 +125,15 @@
               </div>
             </ul>
           </div>
-          <div ref="navbarOutside" class="outside"></div>
+          <div
+            @click="mobileMenuClose"
+            class="outside"
+          ></div>
         </div>
       </nav>
 
-      <!-- <r-modal
-        ref="modalNotifications"
+      <r-pop-up
+        ref="notificationsPopUp"
         open-class="displayFlex"
         class="notificationsContainer"
         id="notificationsContainer"
@@ -110,26 +141,43 @@
         <template #default="{ close }">
           <div class="notificationsContainerHeader">
             <p class="left font-la-nord-bold">NOTIFICATIONS</p>
-            <p @click="close" class="right orangeText">X</p>
+            <p
+              @click="close"
+              class="right orangeText"
+            >X</p>
           </div>
-          
+
           <div class="userChatHeader">
-            <r-dropdown
-              v-for="(notification, index) of notificationsList"
-              :key="index"
+            <r-drop-down
+              v-for="notification of notifications"
+              :key="notification.id"
               class="notificationContainer"
             >
               <template #header="{ toggle }">
-                <div class="notificationOrangeCircle"></div>
+                <div
+                  :class="getNotificationClasses(notification.read)"
+                  class="notificationOrangeCircle"
+                ></div>
+
                 <div class="profilePic">
-                  <img :src="notification.image" class="influencerPicture">
+                  <img
+                    :src="notification.image"
+                    class="influencerPicture"
+                  >
                 </div>
+
                 <div class="notificationInfo">
                   <div class="nameAndTime">
-                    <p class="notificationTitle" v-html="notification.title"></p>
+                    <p
+                      v-html="notification.title"
+                      class="notificationTitle"
+                    ></p>
                   </div>
+
                   <div class="notificationShortMessage">
-                    <p v-html="notification.message"></p>
+                    <p
+                      v-html="notification.message"
+                    ></p>
                   </div>
                 </div>
 
@@ -139,73 +187,84 @@
                   class="elipsis"
                 >
               </template>
-              
-              <r-dropdown-item>Read</r-dropdown-item>
-              <r-dropdown-item>Delete</r-dropdown-item>
-              <r-dropdown-item>Report an issue</r-dropdown-item>
-            </r-dropdown>
+
+              <p
+                @click="notificationRead(notification.id)"
+              >Read</p>
+              <p
+                @click="notificationRemove(notification.id)"
+              >Delete</p>
+              <p>Report an issue</p>
+            </r-drop-down>
           </div>
         </template>
-      </r-modal> -->
-
-      <Notifications
-        ref="modalNotifications"
-      />
+      </r-pop-up>
     </div>
   </header>
 </template>
 
 <script>
-import NavbarToggler from '@/components/NavbarToggler'
-
-import RDropdown from '@/components/base/RDropdown/RDropdown'
-import RDropdownItem from '@/components/base/RDropdown/RDropdownItem'
-
-import RModal from '@/components/base/RModal/RModal'
-
-import Notifications from '@/components/Notifications'
+import RDropDown from '@/components/base/RDropDown/RDropDown'
+import RPopUp from '@/components/base/RPopUp/RPopUp'
 
 export default {
+  name: 'Header',
   data() {
     return {
-      isNavbarOpen: false,
-      notificationsList: [
+      mobileMenuIsOpen: false,
+      notifications: [
         {
+          id: 1,
+          read: false,
           image: require('@/assets/images/aden.jpg'),
           title: 'Jane Doe Applied',
           message: 'Applied for <span class="orangeText">Fitness Influencer Wanted for Protein Brand</span>'
         },
         {
+          id: 2,
+          read: false,
           image: require('@/assets/images/aden.jpg'),
           title: 'Jane Doe Bid',
           message: 'Bid On <span class="orangeText">Fitness Influencer Wanted for Protein Brand</span>'
         },
         {
+          id: 3,
+          read: true,
           image: require('@/assets/icons/notifcation0.png'),
           title: 'Woo Hoo!',
           message: '<span class="orangeText">Campaign Name</span> Has Reached A 6% Engagement'
         },
         {
+          id: 4,
+          read: false,
           image: require('@/assets/icons/notifcation1.png'),
           title: 'Your Campaign Is <span class="greenText">Active</span>',
           message: 'Fitness Influencer Wanted For Protein Brand Is Active'
         },
         {
+          id: 5,
+          read: false,
           image: require('@/assets/icons/notifcation2.png'),
           title: 'New Review',
           message: 'Check Out Your Review For <span class="orangeText">Campaign Name</span>'
         },
         {
+          id: 6,
+          read: true,
           image: require('@/assets/icons/notifcation3.png'),
           title: 'Ravyyn Support',
           message: 'You Have Received A Message From Ravyyn Support Team'
         },
         {
+          id: 7,
+          read: true,
           image: require('@/assets/icons/notifcation4.png'),
           title: 'No Budget',
           message: 'Campaigns With BUdgets Added Receive More Applicants'
         },
         {
+          id: 8,
+          read: true,
           image: require('@/assets/icons/notifcation5.png'),
           title: '2 Hour Edit Window',
           message: 'You Have 2 Hours To Edit Your Campaign Before It Goes Live'
@@ -214,31 +273,52 @@ export default {
     }
   },
   methods: {
-    toggleNavbar() {
-      this.isNavbarOpen = !this.isNavbarOpen
+    mobileMenuOpen() {
+      this.mobileMenuIsOpen = true
     },
-    closeNavbar() {
-      this.isNavbarOpen = false
+    mobileMenuClose() {
+      this.mobileMenuIsOpen = false
     },
-    toggleModalNotifications() {
-      const modalNotifications = this.$refs.modalNotifications
+    notificationsPopUpToggle() {
+      const notificationsPopUp = this.$refs.notificationsPopUp
 
-      modalNotifications.toggle()
+      notificationsPopUp.outsideAction('toggle')
+    },
+    getNotificationIndexById(id) {
+      const notifications = this.notifications
+      const notificationIndex = notifications.findIndex(notification => notification.id === id)
+
+      return notificationIndex
+    },
+    notificationRead(id) {
+      const notifications = this.notifications
+      const notificationIndex = this.getNotificationIndexById(id)
+      const notification = notifications[notificationIndex]
+
+      notification.read = true
+    },
+    notificationRemove(id) {
+      const notifications = this.notifications
+      const notificationIndex = this.getNotificationIndexById(id)
+
+      notifications.splice(notificationIndex, 1)
+    },
+    getNotificationClasses(read) {
+      return {
+        displayNone: read
+      }
     }
   },
-  mounted() {
-    const $navbarOutside = this.$refs.navbarOutside
-
-    $navbarOutside.addEventListener('click', this.closeNavbar)
-
-    console.log(this.$store)
+  computed: {
+    mobileMenuClasses() {
+      return {
+        active: this.mobileMenuIsOpen
+      }
+    }
   },
   components: {
-    NavbarToggler,
-    RDropdown,
-    RDropdownItem,
-    RModal,
-    Notifications
+    RDropDown,
+    RPopUp
   }
 }
 </script>
