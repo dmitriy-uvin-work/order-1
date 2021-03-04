@@ -1551,7 +1551,7 @@ import '@/assets/css/general.css'
 import '@/assets/css/dashboard-animation.css'
 import '@/assets/css/ion.rangeSlider.css'
 
-import RDropDown from '@/components/base/RDropDown/RDropDown'
+import RDropDown from './RDropdown'
 
 export default {
   name: 'Dashboard',
