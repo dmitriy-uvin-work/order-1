@@ -288,13 +288,13 @@
             @click="setTabSelected(index)"
             :class="getTabsButtonClasses(index)"
             class="campaignNavType"
-          >{{tab.title}}</p>
+          >{{tab.title.toUpperCase()}}</p>
 
         </div>
       </div>
       <div class="rowFlex campaignsContainer" id="campaigns">
 
-        <div class="campaignContainer activeNoFolderCampaign">
+        <div v-for="campaing of filteredItems" :key="campaing.id" class="campaignContainer activeNoFolderCampaign">
           <div class="campaign columnFlex">
 
             <div class="campaignPhotos" id="campaignPhotos0">
@@ -312,9 +312,48 @@
             </div>
 
             <div class="campaignInfo">
-              
+              <img
+                v-if="tabSelected.title === 'today'"
+                class="campaignInfoClock"
+                src="@/assets/icons/clock.svg"
+                alt=""
+              >
+
+              <img
+                v-else-if="tabSelected.title === 'pending'"
+                class="campaignInfoClock"
+                src="@/assets/icons/clock.svg"
+                alt=""
+                :style="{
+                  filter: 'hue-rotate(-97deg) brightness(0.85)'
+                }"
+              >
+
+              <div class="rowFlex personIconRow">
+                <img src="@/assets/icons/personIcon.png" class="personIcon">
+                {{ campaing.peoples }}
+              </div>
+              <router-link to="/find-influencers">
+                <img src="@/assets/icons/personIconPlus.png" class="personIconPlus">
+              </router-link>
+
+              <r-drop-down>
+                <template #header="{ toggle }">
+                  <img @click="toggle" src="@/assets/icons/ellipsis.svg" class="campaignInfoElipsis">
+                </template>
+
+                <p>Campaign Settings</p>
+                <p>Applicants</p>
+                <p>Discount Code</p>
+                <p>Delete</p>
+              </r-drop-down>
             </div>
 
+          </div>
+
+          <div class="campaignTitle">
+            <p>Project Title</p>
+            <p>3/26/20 - 1pm</p>
           </div>
         </div>
 
@@ -1553,6 +1592,13 @@ import '@/assets/css/ion.rangeSlider.css'
 
 import RDropDown from './RDropdown'
 
+const filter = {
+  today: item => item.date === new Date(),
+  pending: item => item.status === 'pending',
+  drafts: item => item.status === 'draft',
+  completed: item => item.status === 'completed'
+}
+
 export default {
   name: 'Dashboard',
   data() {
@@ -1595,21 +1641,32 @@ export default {
       tabSelectedIndex: 0,
       tabs: [
         {
-          title: 'TODAY'
+          title: 'today'
         },
         {
-          title: 'PENDING'
+          title: 'pending'
         },
         {
-          title: 'DRAFTS'
+          title: 'drafts'
         },
         {
-          title: 'COMPLETED'
+          title: 'completed'
+        }
+      ],
+      campaings: [
+        {
+          id: 1,
+          peoples: 4,
+          status: 'pending',
+          date: '3/26/20 - 1pm'
         }
       ]
     }
   },
   computed: {
+    filteredItems() {
+      return this.campaings.filter(filter[this.tabSelected.title])
+    },
     statsRibbonClasses() {
       const statSelectedIndex = this.statSelectedIndex
 

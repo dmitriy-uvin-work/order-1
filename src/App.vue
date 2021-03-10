@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <router-link to="/dashboard">Dashboard</router-link>
     <Header />
     <router-view></router-view>
     <Footer />

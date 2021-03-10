@@ -22,7 +22,7 @@ import Landing from '../components/Landing'
 const router= new VueRouter({
   routes: [
     { path: '/', component: Landing },
-    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
+    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: false } },
     { path: '/login', component: Login },
     { path: '/signup', component: AccountType },
     { path: '/signup/:userType', component: SignUp },
